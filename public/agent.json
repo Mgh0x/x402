@@ -1,0 +1,33 @@
+{
+  "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
+  "name": "Based Guestbook x402 Agent",
+  "description": "An x402-protected Base builder signal endpoint with ERC-8021 Builder Code attribution and a public onchain guestbook.",
+  "image": "https://based-guestbook-x402.vercel.app/favicon.svg",
+  "services": [
+    {
+      "name": "web",
+      "endpoint": "https://based-guestbook-x402.vercel.app/",
+      "version": "1.0.0"
+    },
+    {
+      "name": "x402",
+      "endpoint": "https://based-guestbook-x402.vercel.app/api/base-signal",
+      "version": "2.0.0"
+    },
+    {
+      "name": "github",
+      "endpoint": "https://github.com/Mgh0x/x402"
+    }
+  ],
+  "x402Support": true,
+  "active": true,
+  "registrations": [],
+  "supportedTrust": [
+    "reputation"
+  ],
+  "builder": {
+    "builderCode": "bc_245mi40p",
+    "builderWallet": "0x85Ea474FfAF21e45ce88185869F13432F92956c3",
+    "baseMainnetContract": "0x8238e860f836627D62fC1de4D3EB9030446A4D84"
+  }
+}

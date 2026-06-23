@@ -1,0 +1,24 @@
+{
+  "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
+  "name": "Based Guestbook x402 Agent",
+  "description": "Domain-control helper for ERC-8004 registration. The primary registration file is served at /agent.json.",
+  "image": "https://based-guestbook-x402.vercel.app/favicon.svg",
+  "services": [
+    {
+      "name": "web",
+      "endpoint": "https://based-guestbook-x402.vercel.app/",
+      "version": "1.0.0"
+    },
+    {
+      "name": "x402",
+      "endpoint": "https://based-guestbook-x402.vercel.app/api/base-signal",
+      "version": "2.0.0"
+    }
+  ],
+  "x402Support": true,
+  "active": true,
+  "registrations": [],
+  "supportedTrust": [
+    "reputation"
+  ]
+}

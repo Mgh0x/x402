@@ -38,6 +38,15 @@ The x402 protected route also declares the same Builder Code in its route extens
 
 The default x402 configuration uses Base Sepolia (`eip155:84532`) because the free `https://x402.org/facilitator` is testnet-only. For Base mainnet x402 payments (`eip155:8453`), use a production CDP facilitator before changing `X402_NETWORK`.
 
+## ERC-8004 Agent Metadata
+
+- Registration file: `https://based-guestbook-x402.vercel.app/agent.json`
+- Agent card: `https://based-guestbook-x402.vercel.app/.well-known/agent-card.json`
+- Domain helper: `https://based-guestbook-x402.vercel.app/.well-known/agent-registration.json`
+- Intended agent wallet: `0x85Ea474FfAF21e45ce88185869F13432F92956c3`
+
+The metadata prepares this project for ERC-8004 agent registration on Base. After an onchain agent identity is minted, update the `registrations` arrays with the registry address and agent ID.
+
 ## Local Setup
 
 ```bash
@@ -55,6 +64,7 @@ Open `http://127.0.0.1:5173`.
 npm run build
 npm run lint
 npm run compile
+npm run agent:check
 npm run x402
 ```
 

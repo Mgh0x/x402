@@ -1,0 +1,34 @@
+{
+  "name": "Based Guestbook x402 Agent",
+  "description": "A Base builder service exposing an x402-protected signal endpoint and onchain guestbook proof.",
+  "url": "https://based-guestbook-x402.vercel.app/",
+  "version": "1.0.0",
+  "provider": {
+    "organization": "Mgh0x",
+    "url": "https://github.com/Mgh0x/x402"
+  },
+  "capabilities": {
+    "x402": true,
+    "erc8004": true,
+    "erc8021BuilderCode": true
+  },
+  "skills": [
+    {
+      "id": "base-signal",
+      "name": "Base x402 Signal",
+      "description": "Returns a paid Base builder signal through an x402-protected endpoint.",
+      "endpoint": "https://based-guestbook-x402.vercel.app/api/base-signal"
+    },
+    {
+      "id": "guestbook-proof",
+      "name": "Onchain Guestbook Proof",
+      "description": "Publishes short builder messages to a Base mainnet guestbook contract.",
+      "endpoint": "https://based-guestbook-x402.vercel.app/"
+    }
+  ],
+  "metadata": {
+    "builderCode": "bc_245mi40p",
+    "wallet": "0x85Ea474FfAF21e45ce88185869F13432F92956c3",
+    "registrationFile": "https://based-guestbook-x402.vercel.app/agent.json"
+  }
+}

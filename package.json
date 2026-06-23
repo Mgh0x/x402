@@ -10,6 +10,7 @@
     "compile": "hardhat compile",
     "deploy:sepolia": "hardhat run scripts/deploy.js --network baseSepolia",
     "deploy:base": "hardhat run scripts/deploy.js --network base",
+    "agent:check": "node scripts/check-agent-metadata.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },
