@@ -5,19 +5,23 @@ import {
   useChainId,
   useConnect,
   useDisconnect,
+  usePublicClient,
   useReadContract,
+  useSignMessage,
   useSwitchChain,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from 'wagmi'
 import { base, baseSepolia } from 'wagmi/chains'
 import { concatHex, formatEther, getContractAddress, padHex, parseAbi, toHex } from 'viem'
+import { createSiweMessage, generateSiweNonce, verifySiweMessage } from 'viem/siwe'
 import {
   ArrowUpRight,
   BookOpenText,
   CheckCircle2,
   Code2,
   ExternalLink,
+  Fingerprint,
   KeyRound,
   Loader2,
   MessageSquareText,
@@ -72,6 +76,10 @@ const erc8004IdentityAbi = parseAbi([
   'function register(string agentURI) returns (uint256 agentId)',
   'function balanceOf(address owner) view returns (uint256)',
 ])
+const agentRegistration = {
+  agentId: 56639,
+  agentRegistry: 'eip155:8453:0x8004A169FB4a3325136EB29fA0ceB6D2e539a432',
+}
 
 function compact(address) {
   if (!address) return ''
@@ -85,12 +93,16 @@ function App() {
   const [copiedDiagnostics, setCopiedDiagnostics] = useState(false)
   const [deployError, setDeployError] = useState(null)
   const [deployHash, setDeployHash] = useState(null)
+  const [identityError, setIdentityError] = useState('')
+  const [identityProof, setIdentityProof] = useState(null)
   const [predictedAddress, setPredictedAddress] = useState('')
   const [isDeploying, setIsDeploying] = useState(false)
   const { address, connector, isConnected } = useAccount()
   const chainId = useChainId()
   const { connectors, connect, isPending: isConnecting } = useConnect()
   const { disconnect } = useDisconnect()
+  const publicClient = usePublicClient({ chainId: preferredChain.id })
+  const { isPending: isSigningIdentity, signMessageAsync } = useSignMessage()
   const { switchChain, isPending: isSwitching } = useSwitchChain()
   const { data: hash, isPending: isWriting, writeContract } = useWriteContract()
   const {
@@ -240,6 +252,49 @@ function App() {
     )
   }
 
+  async function signBaseIdentity() {
+    if (!address || !publicClient || !isCorrectChain) return
+    setIdentityError('')
+    setIdentityProof(null)
+    try {
+      const nonce = generateSiweNonce()
+      const issuedAt = new Date()
+      const message = createSiweMessage({
+        address,
+        chainId: preferredChain.id,
+        domain: window.location.host,
+        issuedAt: issuedAt.toISOString(),
+        nonce,
+        resources: [
+          `${window.location.origin}/agent.json`,
+          'https://github.com/Mgh0x/x402',
+          `${explorer}/address/${activeGuestbookAddress}`,
+          `${explorer}/token/${agentRegistryAddress}?a=${agentRegistration.agentId}`,
+        ],
+        statement: 'Sign in to Based Guestbook x402 and link this wallet to the Base builder app.',
+        uri: window.location.origin,
+        version: '1',
+      })
+      const signature = await signMessageAsync({ message })
+      const valid = await verifySiweMessage(publicClient, {
+        address,
+        domain: window.location.host,
+        message,
+        nonce,
+        signature,
+      })
+      setIdentityProof({
+        address,
+        connector: connector?.name || 'unknown',
+        issuedAt: issuedAt.toISOString(),
+        signature,
+        valid,
+      })
+    } catch (error) {
+      setIdentityError(error.shortMessage || error.message || 'Signature failed')
+    }
+  }
+
   async function copyDiagnostics() {
     const payload = {
       connectedAddress: address,
@@ -319,7 +374,7 @@ function App() {
           <div className="builder-code-chip">Builder Code: {builderCode}</div>
           <div className="hero-actions">
             {!isConnected ? (
-              connectors.slice(0, 3).map((connector) => (
+              connectors.map((connector) => (
                 <button
                   key={connector.uid}
                   className="primary-button"
@@ -481,6 +536,43 @@ function App() {
             </div>
           )}
         </div>
+      </section>
+
+      <section className="identity-panel">
+        <div>
+          <div className="section-title">
+            <Fingerprint size={20} />
+            <h2>Base identity</h2>
+          </div>
+          <p>
+            Sign a SIWE proof for this app domain with the connected wallet. No transaction is sent.
+          </p>
+          <div className="identity-details">
+            <span>Connector: {connector?.name || 'not connected'}</span>
+            <span>Wallet: {address ? compact(address) : 'not connected'}</span>
+            <span>Agent ID: {agentRegistration.agentId}</span>
+          </div>
+        </div>
+        <button
+          className="secondary-button"
+          type="button"
+          disabled={!isConnected || !isCorrectChain || isSigningIdentity}
+          onClick={signBaseIdentity}
+        >
+          {isSigningIdentity ? <Loader2 className="spin" size={18} /> : <Fingerprint size={18} />}
+          {identityProof?.valid ? 'Signed' : 'Sign in with Base'}
+        </button>
+        {identityProof ? (
+          <div className="identity-proof">
+            <span className={identityProof.valid ? 'proof-ok' : 'proof-warn'}>
+              {identityProof.valid ? 'Signature verified' : 'Signature not verified'}
+            </span>
+            <span>{compact(identityProof.address)}</span>
+            <span>{identityProof.connector}</span>
+            <span>{new Date(identityProof.issuedAt).toLocaleString()}</span>
+          </div>
+        ) : null}
+        {identityError ? <p className="error-copy">{identityError}</p> : null}
       </section>
 
       <section className="x402-panel">
