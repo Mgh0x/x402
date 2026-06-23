@@ -263,7 +263,7 @@ function App() {
         address,
         chainId: preferredChain.id,
         domain: window.location.host,
-        issuedAt: issuedAt.toISOString(),
+        issuedAt,
         nonce,
         resources: [
           `${window.location.origin}/agent.json`,
