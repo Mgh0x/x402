@@ -1,0 +1,18 @@
+# Vercel Deployment
+
+## Project
+
+Import `Mgh0x/x402` from GitHub.
+
+## Build Settings
+
+- Framework: Vite
+- Build command: `npm run build`
+- Output directory: `dist`
+
+## Environment Variables
+
+- `VITE_TARGET_CHAIN=base`
+- `VITE_GUESTBOOK_ADDRESS=0x8238e860f836627D62fC1de4D3EB9030446A4D84`
+- `X402_PAY_TO=0x85Ea474FfAF21e45ce88185869F13432F92956c3`
+- `X402_NETWORK=eip155:8453`
