@@ -11,6 +11,7 @@ import {
 const app = express()
 const settings = getX402Settings()
 
+app.set('trust proxy', true)
 app.use(express.json())
 
 const facilitatorClient = new HTTPFacilitatorClient({

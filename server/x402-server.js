@@ -14,6 +14,7 @@ const app = express()
 const port = Number(process.env.X402_PORT || 4021)
 const settings = getX402Settings()
 
+app.set('trust proxy', true)
 app.use(cors())
 app.use(express.json())
 
