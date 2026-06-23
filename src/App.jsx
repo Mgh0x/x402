@@ -29,6 +29,10 @@ import { guestbookAbi, guestbookAddress, guestbookBytecode } from './lib/guestbo
 import './App.css'
 
 const preferredChain = import.meta.env.VITE_TARGET_CHAIN === 'base' ? base : baseSepolia
+const builderCode = import.meta.env.VITE_BASE_BUILDER_CODE || 'bc_245mi40p'
+const builderCodeSuffix =
+  import.meta.env.VITE_BASE_BUILDER_CODE_SUFFIX ||
+  '0x0b62635f3234356d693430700080218021802180218021802180218021'
 
 const steps = [
   {
@@ -140,6 +144,7 @@ function App() {
         functionName: 'sign',
         args: [message.trim()],
         chainId: preferredChain.id,
+        dataSuffix: builderCodeSuffix,
       },
       {
         onSuccess: () => setMessage(''),
@@ -259,6 +264,7 @@ function App() {
             Wallet connect, Base guestbook contract, dashboard-ready app metadata, and a tiny
             x402-protected API route for the agent payments narrative.
           </p>
+          <div className="builder-code-chip">Builder Code: {builderCode}</div>
           <div className="hero-actions">
             {!isConnected ? (
               connectors.slice(0, 3).map((connector) => (

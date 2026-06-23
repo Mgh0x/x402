@@ -16,9 +16,17 @@ Small Base builder project: an onchain guestbook plus a payment-gated x402 API d
 
 - Wallet connect for Base and Base Sepolia.
 - Onchain guestbook contract with recent entry reads.
+- ERC-8021 Builder Code attribution on guestbook writes.
 - CREATE2 factory deployment path for wallet compatibility.
 - x402-protected API route for agent/payment experimentation.
 - Base Dashboard-ready project metadata, contract links, and app surface.
+
+## Builder Code Attribution
+
+- Builder Code: `bc_245mi40p`
+- Encoded suffix: `0x0b62635f3234356d693430700080218021802180218021802180218021`
+
+Guestbook write transactions append the Builder Code suffix through viem/wagmi `dataSuffix` so Base Dashboard can attribute onchain activity to this app.
 
 ## Local Setup
 

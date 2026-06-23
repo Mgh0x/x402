@@ -167,6 +167,18 @@
   line-height: 1.65;
 }
 
+.builder-code-chip {
+  width: fit-content;
+  margin-top: 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 82, 255, 0.16);
+  background: #eef4ff;
+  color: #173ea5;
+  padding: 8px 11px;
+  font-size: 13px;
+  font-weight: 760;
+}
+
 .hero-actions {
   gap: 10px;
   flex-wrap: wrap;
