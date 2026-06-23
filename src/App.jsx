@@ -11,7 +11,7 @@ import {
   useWriteContract,
 } from 'wagmi'
 import { base, baseSepolia } from 'wagmi/chains'
-import { concatHex, formatEther, getContractAddress, padHex, toHex } from 'viem'
+import { concatHex, formatEther, getContractAddress, padHex, parseAbi, toHex } from 'viem'
 import {
   ArrowUpRight,
   BookOpenText,
@@ -63,6 +63,15 @@ const explorerBase = {
 }
 
 const create2Factory = '0x4e59b44847b379578588920cA78FbF26c0B4956C'
+const agentRegistrationUri = 'https://based-guestbook-x402.vercel.app/agent.json'
+const erc8004IdentityRegistry = {
+  [base.id]: '0x8004A169FB4a3325136EB29fA0ceB6D2e539a432',
+  [baseSepolia.id]: '0x8004A818BFB912233c491871b3d84c89A494BD9e',
+}
+const erc8004IdentityAbi = parseAbi([
+  'function register(string agentURI) returns (uint256 agentId)',
+  'function balanceOf(address owner) view returns (uint256)',
+])
 
 function compact(address) {
   if (!address) return ''
@@ -84,9 +93,15 @@ function App() {
   const { disconnect } = useDisconnect()
   const { switchChain, isPending: isSwitching } = useSwitchChain()
   const { data: hash, isPending: isWriting, writeContract } = useWriteContract()
+  const {
+    data: agentHash,
+    isPending: isRegisteringAgent,
+    writeContract: writeAgentContract,
+  } = useWriteContract()
 
   const isCorrectChain = chainId === preferredChain.id
   const explorer = explorerBase[preferredChain.id]
+  const agentRegistryAddress = erc8004IdentityRegistry[preferredChain.id]
   const { data: balance } = useBalance({
     address,
     chainId: preferredChain.id,
@@ -98,6 +113,10 @@ function App() {
 
   const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
     hash,
+    chainId: preferredChain.id,
+  })
+  const { isLoading: isAgentConfirming, isSuccess: isAgentRegistered } = useWaitForTransactionReceipt({
+    hash: agentHash,
     chainId: preferredChain.id,
   })
   const {
@@ -113,6 +132,22 @@ function App() {
   const activeGuestbookAddress = guestbookAddress || deployedAddress
   const hasContract = Boolean(activeGuestbookAddress)
   const formattedBalance = balance?.value === undefined ? 'unknown' : `${Number(formatEther(balance.value)).toFixed(5)} ETH`
+  const {
+    data: agentIdentityBalance,
+    refetch: refetchAgentIdentityBalance,
+  } = useReadContract({
+    address: agentRegistryAddress,
+    abi: erc8004IdentityAbi,
+    functionName: 'balanceOf',
+    args: address ? [address] : undefined,
+    chainId: preferredChain.id,
+    query: {
+      enabled: Boolean(address && agentRegistryAddress),
+      refetchInterval: 10000,
+    },
+  })
+  const agentIdentityCount = agentIdentityBalance === undefined ? 'unknown' : agentIdentityBalance.toString()
+  const hasAgentIdentity = typeof agentIdentityBalance === 'bigint' && agentIdentityBalance > 0n
 
   const {
     data: entries,
@@ -186,6 +221,23 @@ function App() {
     } finally {
       setIsDeploying(false)
     }
+  }
+
+  async function registerAgentIdentity() {
+    if (!agentRegistryAddress || !isConnected || !isCorrectChain) return
+    writeAgentContract(
+      {
+        address: agentRegistryAddress,
+        abi: erc8004IdentityAbi,
+        functionName: 'register',
+        args: [agentRegistrationUri],
+        chainId: preferredChain.id,
+        dataSuffix: builderCodeSuffix,
+      },
+      {
+        onSettled: () => setTimeout(() => refetchAgentIdentityBalance(), 2500),
+      },
+    )
   }
 
   async function copyDiagnostics() {
@@ -449,6 +501,47 @@ function App() {
         {apiResult ? (
           <pre className="api-result">{JSON.stringify(apiResult, null, 2)}</pre>
         ) : null}
+      </section>
+
+      <section className="agent-panel">
+        <div>
+          <div className="section-title">
+            <ShieldCheck size={20} />
+            <h2>ERC-8004 Agent</h2>
+          </div>
+          <p>
+            Register the x402 service as an onchain agent identity owned by the connected wallet.
+          </p>
+          <div className="agent-details">
+            <span>Registry: {compact(agentRegistryAddress)}</span>
+            <span>Identity count: {agentIdentityCount}</span>
+            <a href={agentRegistrationUri} target="_blank" rel="noreferrer">
+              Agent metadata <ExternalLink size={14} />
+            </a>
+          </div>
+        </div>
+        <button
+          className="secondary-button"
+          type="button"
+          disabled={
+            !agentRegistryAddress ||
+            !isConnected ||
+            !isCorrectChain ||
+            hasAgentIdentity ||
+            isRegisteringAgent ||
+            isAgentConfirming
+          }
+          onClick={registerAgentIdentity}
+        >
+          {isRegisteringAgent || isAgentConfirming ? <Loader2 className="spin" size={18} /> : <ShieldCheck size={18} />}
+          {hasAgentIdentity || isAgentRegistered ? 'Registered' : isAgentConfirming ? 'Registering' : 'Register agent'}
+        </button>
+        {agentHash ? (
+          <a className="tx-link" href={`${explorer}/tx/${agentHash}`} target="_blank" rel="noreferrer">
+            View agent transaction <ExternalLink size={15} />
+          </a>
+        ) : null}
+        {isAgentRegistered ? <p className="success-copy">ERC-8004 agent identity registered.</p> : null}
       </section>
     </main>
   )

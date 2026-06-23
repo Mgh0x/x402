@@ -137,7 +137,8 @@
 
 .hero-grid,
 .workbench,
-.x402-panel {
+.x402-panel,
+.agent-panel {
   width: min(1180px, calc(100% - 32px));
   margin: 0 auto;
 }
@@ -188,7 +189,8 @@
 .signal-panel,
 .compose-panel,
 .entries-panel,
-.x402-panel {
+.x402-panel,
+.agent-panel {
   border: 1px solid rgba(17, 24, 39, 0.1);
   background: rgba(255, 255, 255, 0.84);
   box-shadow: 0 24px 70px rgba(15, 23, 42, 0.08);
@@ -241,7 +243,8 @@
 
 .signal-row p,
 .empty-state p,
-.x402-panel p {
+.x402-panel p,
+.agent-panel p {
   margin: 4px 0 0;
   color: #5b6472;
   font-size: 13px;
@@ -399,14 +402,48 @@ textarea:focus {
   font-size: 14px;
 }
 
-.x402-panel {
+.x402-panel,
+.agent-panel {
   border-radius: 8px;
   padding: 20px;
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 16px;
   align-items: start;
+}
+
+.x402-panel {
+  margin-bottom: 18px;
+}
+
+.agent-panel {
   margin-bottom: 44px;
+}
+
+.agent-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.agent-details span,
+.agent-details a {
+  min-height: 30px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border-radius: 8px;
+  background: #f1f5f9;
+  color: #334155;
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 720;
+  text-decoration: none;
+}
+
+.agent-details a {
+  color: #0052ff;
 }
 
 .api-result {
@@ -435,17 +472,20 @@ textarea:focus {
   .topbar,
   .hero-grid,
   .workbench,
-  .x402-panel {
+  .x402-panel,
+  .agent-panel {
     width: min(100% - 24px, 1180px);
   }
 
   .topbar,
-  .x402-panel {
+  .x402-panel,
+  .agent-panel {
     align-items: stretch;
   }
 
   .topbar,
   .x402-panel,
+  .agent-panel,
   .workbench,
   .hero-grid {
     grid-template-columns: 1fr;
