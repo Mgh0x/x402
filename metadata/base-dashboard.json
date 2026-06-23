@@ -1,0 +1,8 @@
+{
+  "name": "Based Guestbook x402",
+  "description": "An onchain Base guestbook with a payment-gated x402 API demo.",
+  "category": ["developer-tool", "social", "payments"],
+  "chain": "base",
+  "contract": "0x8238e860f836627D62fC1de4D3EB9030446A4D84",
+  "builderWallet": "0x85Ea474FfAF21e45ce88185869F13432F92956c3"
+}
