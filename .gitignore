@@ -27,3 +27,5 @@ qa-*.png
 *.njsproj
 *.sln
 *.sw?
+
+.vercel
