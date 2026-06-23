@@ -18,7 +18,7 @@ Small Base builder project: an onchain guestbook plus a payment-gated x402 API d
 - Onchain guestbook contract with recent entry reads.
 - ERC-8021 Builder Code attribution on guestbook writes.
 - CREATE2 factory deployment path for wallet compatibility.
-- x402-protected API route for agent/payment experimentation.
+- x402-protected API route with Builder Code metadata for agent/payment experimentation.
 - Base Dashboard-ready project metadata, contract links, and app surface.
 
 ## Builder Code Attribution
@@ -27,6 +27,16 @@ Small Base builder project: an onchain guestbook plus a payment-gated x402 API d
 - Encoded suffix: `0x62635f3234356d693430700b0080218021802180218021802180218021`
 
 Guestbook write transactions append the Builder Code suffix through viem/wagmi `dataSuffix` so Base Dashboard can attribute onchain activity to this app.
+
+The x402 protected route also declares the same Builder Code in its route extensions so paid endpoint activity can be attributed to this app when x402 payments settle on Base.
+
+## x402 Route
+
+- Local route: `http://127.0.0.1:4021/api/base-signal`
+- Public route: `https://based-guestbook-x402.vercel.app/api/base-signal`
+- Builder Code extension: `bc_245mi40p`
+
+The default x402 configuration uses Base Sepolia (`eip155:84532`) because the free `https://x402.org/facilitator` is testnet-only. For Base mainnet x402 payments (`eip155:8453`), use a production CDP facilitator before changing `X402_NETWORK`.
 
 ## Local Setup
 
