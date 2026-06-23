@@ -3,6 +3,8 @@ import { readFileSync } from 'node:fs'
 const expectedWallet = '0x85Ea474FfAF21e45ce88185869F13432F92956c3'
 const expectedBuilderCode = 'bc_245mi40p'
 const expectedOrigin = 'https://based-guestbook-x402.vercel.app'
+const expectedAgentId = 56639
+const expectedAgentRegistry = 'eip155:8453:0x8004A169FB4a3325136EB29fA0ceB6D2e539a432'
 
 function readJson(path) {
   return JSON.parse(readFileSync(path, 'utf8'))
@@ -27,6 +29,8 @@ assert(registration.services.some((service) => service.name === 'x402'), 'agent.
 assert(registration.builder?.builderCode === expectedBuilderCode, 'agent.json builder code mismatch')
 assert(registration.builder?.builderWallet === expectedWallet, 'agent.json builder wallet mismatch')
 assert(registration.services.every((service) => service.endpoint.startsWith(expectedOrigin) || service.endpoint.startsWith('https://github.com/')), 'agent.json contains an unexpected service origin')
+assert(registration.registrations?.[0]?.agentId === expectedAgentId, 'agent.json agentId mismatch')
+assert(registration.registrations?.[0]?.agentRegistry === expectedAgentRegistry, 'agent.json agentRegistry mismatch')
 
 assert(agentCard.capabilities?.x402 === true, 'agent-card must advertise x402')
 assert(agentCard.capabilities?.erc8004 === true, 'agent-card must advertise ERC-8004')
@@ -36,5 +40,7 @@ assert(agentCard.metadata?.registrationFile === `${expectedOrigin}/agent.json`, 
 
 assert(wellKnownRegistration.type === registration.type, 'well-known registration type mismatch')
 assert(wellKnownRegistration.x402Support === true, 'well-known registration must advertise x402 support')
+assert(wellKnownRegistration.registrations?.[0]?.agentId === expectedAgentId, 'well-known agentId mismatch')
+assert(wellKnownRegistration.registrations?.[0]?.agentRegistry === expectedAgentRegistry, 'well-known agentRegistry mismatch')
 
 console.log('ERC-8004 agent metadata checks passed')
