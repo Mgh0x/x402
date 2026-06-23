@@ -24,7 +24,7 @@ Small Base builder project: an onchain guestbook plus a payment-gated x402 API d
 ## Builder Code Attribution
 
 - Builder Code: `bc_245mi40p`
-- Encoded suffix: `0x0b62635f3234356d693430700080218021802180218021802180218021`
+- Encoded suffix: `0x62635f3234356d693430700b0080218021802180218021802180218021`
 
 Guestbook write transactions append the Builder Code suffix through viem/wagmi `dataSuffix` so Base Dashboard can attribute onchain activity to this app.
 

@@ -32,7 +32,7 @@ const preferredChain = import.meta.env.VITE_TARGET_CHAIN === 'base' ? base : bas
 const builderCode = import.meta.env.VITE_BASE_BUILDER_CODE || 'bc_245mi40p'
 const builderCodeSuffix =
   import.meta.env.VITE_BASE_BUILDER_CODE_SUFFIX ||
-  '0x0b62635f3234356d693430700080218021802180218021802180218021'
+  '0x62635f3234356d693430700b0080218021802180218021802180218021'
 
 const steps = [
   {
